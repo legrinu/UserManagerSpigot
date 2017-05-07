@@ -1,0 +1,17 @@
+name: UserManager
+author: Legrinu
+version: 0.1
+
+main: de.legrinu.usermanager.UserManager
+
+commands:      
+  login:
+    description: Login Command. 
+  register:  
+    description: Register Command.
+  changepw:  
+    description: Password change Command.
+  unregister:  
+    description: Unregister Command.
+  changerang:  
+    description: Rang change Command.
