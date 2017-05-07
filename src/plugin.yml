@@ -15,3 +15,4 @@ commands:
     description: Unregister Command.
   changerang:  
     description: Rang change Command.
+    permission: usermanager.cmd.changerang
