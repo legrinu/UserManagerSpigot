@@ -50,7 +50,7 @@ public class ChangePwCMD
                   (!oldpw.equals(pw1)))
                 {
                   Manager.setPW(crypt, p);
-                  p.sendMessage("§5[UM]§7 Dein Passwort wurde erfolgreich ge#ndert!");
+                  p.sendMessage("§5[UM]§7 Dein Passwort wurde erfolgreich geändert!");
                   p.sendMessage("§5[UM]§7 Rejoine, damit die Änderungen wirken.");
                 }
               }
