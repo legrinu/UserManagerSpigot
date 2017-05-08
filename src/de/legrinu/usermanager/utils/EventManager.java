@@ -7,33 +7,38 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class EventManager implements Listener{
-	
-	@EventHandler
-	public void onJoin(PlayerJoinEvent e){
-		
-		Player p = e.getPlayer();
-		
-		if(Manager.isRegistered(p)){
-			p.sendMessage("ง5[UM]ง7 Bitte logge dich ein mit /login <Dein Passwort>");
-		}else{
-			p.sendMessage("ง5[UM]ง7 Bitte registriere dich mit /register <Dein Passwort> <Dein Passwort>");
-		}
-	}
-	
-	@EventHandler
-	public void onQuit(PlayerQuitEvent e){
-		Player p = e.getPlayer();		
-		Manager.logout(p);
-	}
-	
-	@EventHandler
-	public void onMove(PlayerMoveEvent e){
-		Player p = e.getPlayer();
-				
-		if(!Manager.isLoggedIn(p)){
-			p.teleport(e.getFrom());
-		}
-	}
-
+public class EventManager
+  implements Listener
+{
+  @EventHandler
+  public void onJoin(PlayerJoinEvent e)
+  {
+    Player p = e.getPlayer();
+    if (!p.hasPermission("usermanager.login.bypass")) {
+      if (Manager.isRegistered(p)) {
+        p.sendMessage("ยง5[UM]ยง7 Bitte logge dich ein mit /login <Dein Passwort>");
+      } else {
+        p.sendMessage("ยง5[UM]ยง7 Bitte registriere dich mit /register <Dein Passwort> <Dein Passwort>");
+      }
+    }
+  }
+  
+  @EventHandler
+  public void onQuit(PlayerQuitEvent e)
+  {
+    Player p = e.getPlayer();
+    if (!p.hasPermission("usermanager.login.bypass")) {
+      Manager.logout(p);
+    }
+  }
+  
+  @EventHandler
+  public void onMove(PlayerMoveEvent e)
+  {
+    Player p = e.getPlayer();
+    if ((!p.hasPermission("usermanager.login.bypass")) && 
+      (!Manager.isLoggedIn(p))) {
+      p.teleport(e.getFrom());
+    }
+  }
 }
