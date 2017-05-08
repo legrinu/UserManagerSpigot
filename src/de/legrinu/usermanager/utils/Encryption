@@ -1,0 +1,22 @@
+ package de.legrinu.usermanager.utils;
+ 
+ import java.security.MessageDigest;
+ import java.security.NoSuchAlgorithmException;
+ 
+ public class Encryption
+ {
+   public static String encrypt(String string) throws NoSuchAlgorithmException
+   {
+    String original = string;
+    MessageDigest md = MessageDigest.getInstance("MD5");
+     md.update(original.getBytes());
+     byte[] digest = md.digest();
+    StringBuffer sb = new StringBuffer();
+    byte[] arrayOfByte1; int j = (arrayOfByte1 = digest).length; for (int i = 0; i < j; i++) { byte b = arrayOfByte1[i];
+      sb.append(String.format("%02x", new Object[] { Integer.valueOf(b & 0xFF) }));
+     }
+     
+    return sb.toString();
+   }
+ }
+
