@@ -22,7 +22,7 @@ public class RegisterCMD
         {
           String pw1 = args[0];
           String pw2 = args[1];
-          p.sendMessage(pw1 + "|" + pw2);
+          
           if (pw1.equals(pw2))
           {
             String crypt = null;
