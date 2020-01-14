@@ -38,3 +38,6 @@ Database: ExampleDatabase
 Username: ExampleUsername
 
 Passwort: ExamplePasswort
+
+
+Downloaden kann man das Plugin direkt über die SPigotMC Website.
