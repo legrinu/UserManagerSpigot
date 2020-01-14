@@ -16,3 +16,9 @@ commands:
   changerang:  
     description: Rang change Command.
     permission: usermanager.cmd.changerang
+  users:  
+    description: Users Command.
+    permission: usermanager.cmd.users
+  um:  
+    description: Users Command.
+    permission: usermanager.cmd.um

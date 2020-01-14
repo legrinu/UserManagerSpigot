@@ -1,12 +1,15 @@
 package de.legrinu.usermanager.cmd;
 
-import de.legrinu.usermanager.utils.Encryption;
+import de.legrinu.usermanager.UserManager;
+import de.legrinu.usermanager.utils.Decryption;
 import de.legrinu.usermanager.utils.Manager;
-import java.security.NoSuchAlgorithmException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class LoginCMD
   implements CommandExecutor
@@ -20,42 +23,42 @@ public class LoginCMD
         if (args.length == 1)
         {
           String pw = args[0];
-          String crypt = null;
+          Boolean valid = false;
           try
           {
-            crypt = Encryption.encrypt(pw);
+            valid = Decryption.validatePassword(pw, Manager.getPW(p));
           }
-          catch (NoSuchAlgorithmException e)
+          catch (NoSuchAlgorithmException | InvalidKeySpecException e)
           {
             e.printStackTrace();
           }
-          if (crypt != null)
+          if (valid != null)
           {
-            if (crypt.equals(Manager.getPW(p)))
+            if (valid)
             {
               Manager.login(p);
-              p.sendMessage("§5[UM]§7 Du wurdest erfolgreich eingeloggt und kannst dich nun bewegen.");
+              p.sendMessage(UserManager.prefix() + "Du wurdest erfolgreich eingeloggt und kannst dich nun bewegen.");
             }
             else
             {
-              p.sendMessage("§5[UM]§7 Falsches Passwort!");
+              p.sendMessage(UserManager.prefix() + "Falsches Passwort!");
             }
           }
           else
           {
-            System.err.println("Error while encrypting! PW: " + crypt);
-            p.sendMessage("§5[UM]§7 Aufgrund eines Fehlers konntest du nicht registriert werden. Melde dich bitte bei einem Teammitglied.");
+            System.err.println("Error while encrypting! PW: " + valid);
+            p.sendMessage(UserManager.prefix() + "Aufgrund eines Fehlers konntest du nicht registriert werden. Melde dich bitte bei einem Teammitglied.");
           }
         }
         else
         {
-          sender.sendMessage("§5[UM]§7 /login <Dein Passwort>");
+          sender.sendMessage(UserManager.prefix() + "/login <Dein Passwort>");
         }
       }
     }
     else
     {
-      sender.sendMessage("Du musst ein Spieler sein, um dies machen zu dürfen.");
+      sender.sendMessage("Du musst ein Spieler sein, um dies machen zu d�rfen.");
     }
     return true;
   }

@@ -7,6 +7,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import de.legrinu.usermanager.UserManager;
+
 public class EventManager
   implements Listener
 {
@@ -14,11 +16,15 @@ public class EventManager
   public void onJoin(PlayerJoinEvent e)
   {
     Player p = e.getPlayer();
+    
+    //System.out.println("Is Premium: " + p.getName() + " | " + Manager.isPremium(p));
+    
+    
     if (!p.hasPermission("usermanager.login.bypass")) {
       if (Manager.isRegistered(p)) {
-        p.sendMessage("§5[UM]§7 Bitte logge dich ein mit /login <Dein Passwort>");
+        p.sendMessage(UserManager.prefix() + "Bitte logge dich ein mit /login <Dein Passwort>");
       } else {
-        p.sendMessage("§5[UM]§7 Bitte registriere dich mit /register <Dein Passwort> <Dein Passwort>");
+        p.sendMessage(UserManager.prefix() + "Bitte registriere dich mit /register <Dein Passwort> <Dein Passwort>");
       }
     }
   }

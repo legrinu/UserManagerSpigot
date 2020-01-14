@@ -1,10 +1,16 @@
 package de.legrinu.usermanager.utils;
 
-import java.util.HashMap;
-
+import de.legrinu.usermanager.UserManager;
+import de.legrinu.usermanager.mysql.MySQL;
+import de.legrinu.usermanager.raenge.Raenge;
 import org.bukkit.entity.Player;
 
-import de.legrinu.usermanager.mysql.MySQL;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 
 public class Manager {
 	
@@ -16,10 +22,10 @@ public class Manager {
 		login.put(p.getName(), true);
 		System.out.println("Login: " + p.getName());
 			}else{
-				p.sendMessage("§5[UM]§7 Du bist bereist eingeloggt!");
+				p.sendMessage(UserManager.prefix() + "Du bist bereist eingeloggt!");
 			}
 		}else{			
-			p.sendMessage("§5[UM]§7 Bitte registriere dich zuerst.");
+			p.sendMessage(UserManager.prefix() + "Bitte registriere dich zuerst.");
 		}
 	}
 	
@@ -46,9 +52,9 @@ public class Manager {
 		}
 	}
 	
-	public static void register(Player p, String pw, Rang rang){
+	public static void register(Player p, String pw, Raenge rang){
 		if(isRegistered(p)){
-			p.sendMessage("§5[UM]§7 Du bist bereist registriert!");
+			p.sendMessage(UserManager.prefix() + "Du bist bereist registriert!");
 		return;
 		}else{
 		MySQL.createUser(p.getName(), pw, reconverted(rang));
@@ -67,8 +73,8 @@ public class Manager {
 		System.out.println("Rang changed: " + p.getName());
 	}
 	
-	public static Rang getRang(Player p){
-		Rang r = converted(MySQL.getRang(p.getName()));		
+	public static Raenge getRang(Player p){
+		Raenge r = converted(MySQL.getRang(p.getName()));		
 		return r;
 	}
 	
@@ -84,48 +90,68 @@ public class Manager {
 		return MySQL.existsUser(p.getName());
 	}
 	
-	static Rang converted(String rang){
-		Rang r = null;
+	public static int count(){
+		return MySQL.count();
+	}
+	
+	static Raenge converted(String rang){
+		Raenge r = null;
 		
 		if(rang.equals("OWNER")){
-			r = Rang.OWNER;
+			r = Raenge.OWNER;
 		}else if(rang.equals("DEV")){
-			r = Rang.DEV;
+			r = Raenge.DEV;
 		}else if(rang.equals("MOD")){
-			r = Rang.MOD;
+			r = Raenge.MOD;
 		}else if(rang.equals("SUP")){
-			r = Rang.SUP;
+			r = Raenge.SUP;
 		}else if(rang.equals("BUILDER")){
-			r = Rang.BUILDER;
+			r = Raenge.BUILDER;
 		}else if(rang.equals("YT")){
-			r = Rang.YT;
+			r = Raenge.YT;
 		}else if(rang.equals("SPIELER")){
-			r = Rang.SPIELER;
+			r = Raenge.SPIELER;
 		}
 		
 		return r;
 	}
 	
-	static String reconverted(Rang rang){
+	static String reconverted(Raenge rang){
 		String r = null;
 		
-		if(rang.equals(Rang.OWNER)){
+		if(rang.equals(Raenge.OWNER)){
 			r = "OWNER";
-		}else if(rang.equals(Rang.DEV)){
+		}else if(rang.equals(Raenge.DEV)){
 			r = "DEV";
-		}else if(rang.equals(Rang.MOD)){
+		}else if(rang.equals(Raenge.MOD)){
 			r = "MOD";
-		}else if(rang.equals(Rang.SUP)){
+		}else if(rang.equals(Raenge.SUP)){
 			r = "SUP";
-		}else if(rang.equals(Rang.BUILDER)){
+		}else if(rang.equals(Raenge.BUILDER)){
 			r = "BUILDER";
-		}else if(rang.equals(Rang.YT)){
+		}else if(rang.equals(Raenge.YT)){
 			r = "YT";
-		}else if(rang.equals(Rang.SPIELER)){
+		}else if(rang.equals(Raenge.SPIELER)){
 			r = "SPIELER";
 		}
 		
 		return r;
+	}
+	
+	public static boolean isPremium(Player p){
+		boolean premium = false;
+		
+		try {
+			URL url = new URL("https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + p.getName() + "&serverId=hash");
+			String pr = new BufferedReader(new InputStreamReader(url.openStream())).readLine().toUpperCase();
+			premium = Boolean.valueOf(pr);
+		} catch (MalformedURLException e) {			
+			e.printStackTrace();
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+		
+		return premium;
 	}
 
 }

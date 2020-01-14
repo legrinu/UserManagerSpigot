@@ -1,12 +1,8 @@
 package de.legrinu.usermanager.mysql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import de.legrinu.usermanager.UserManager;
+
+import java.sql.*;
 
 
 public class MySQL {
@@ -216,6 +212,32 @@ public static boolean removeUser(String name){
 	
 	return false;
 }
+
+public static int count(){
+	
+	if(!isConnected()){
+		if(!connect()){
+			return -1;
+		}
+	}
+		
+		try {
+			PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) AS t FROM user");											
+
+			ResultSet rs = ps.executeQuery();	
+			
+			if(rs.next()){
+	
+			return rs.getInt("t");
+			}
+			
+		} catch (SQLException e) {				
+			e.printStackTrace();
+		}			
+	
+	
+	return -1;
+}	
 	
 	public static void disconnect() {
 		try {

@@ -1,12 +1,16 @@
 package de.legrinu.usermanager.cmd;
 
+import de.legrinu.usermanager.UserManager;
+import de.legrinu.usermanager.utils.Decryption;
 import de.legrinu.usermanager.utils.Encryption;
 import de.legrinu.usermanager.utils.Manager;
-import java.security.NoSuchAlgorithmException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class ChangePwCMD
   implements CommandExecutor
@@ -24,50 +28,51 @@ public class ChangePwCMD
           String pw2 = args[2];
           if (Manager.isLoggedIn(p))
           {
-            String oldcrypt = null;
+            Boolean oldcrypt = null;
             try
             {
-              oldcrypt = Encryption.encrypt(oldpw);
+              oldcrypt = Decryption.validatePassword(oldpw, Manager.getPW(p));
             }
-            catch (NoSuchAlgorithmException e)
+            catch (NoSuchAlgorithmException | InvalidKeySpecException e)
             {
               e.printStackTrace();
             }
-            String crypt = null;
-            try
+
+            if ((oldcrypt != null))
             {
-              crypt = Encryption.encrypt(pw1);
-            }
-            catch (NoSuchAlgorithmException e)
-            {
-              e.printStackTrace();
-            }
-            if ((crypt != null) && (oldcrypt != null))
-            {
-              if (oldcrypt.equals(Manager.getPW(p)))
+              if (oldcrypt)
               {
                 if ((pw1.equals(pw2)) && 
                   (!oldpw.equals(pw1)))
                 {
+                  String crypt = null;
+                  try
+                  {
+                    crypt = Encryption.generateStrongPasswordHash(pw1);
+                  }
+                  catch (NoSuchAlgorithmException | InvalidKeySpecException e)
+                  {
+                    e.printStackTrace();
+                  }
                   Manager.setPW(crypt, p);
-                  p.sendMessage("§5[UM]§7 Dein Passwort wurde erfolgreich geändert!");
-                  p.sendMessage("§5[UM]§7 Rejoine, damit die Änderungen wirken.");
+                  p.sendMessage(UserManager.prefix() + "Dein Passwort wurde erfolgreich geändert!");
+                  p.sendMessage(UserManager.prefix() + "Rejoine, damit die Änderungen wirken.");
                 }
               }
               else {
-                p.sendMessage("§5[UM]§7 Falsches Passwort!");
+                p.sendMessage(UserManager.prefix() + "Falsches Passwort!");
               }
             }
             else
             {
-              System.err.println("Error while encrypting! OldPW: " + oldcrypt + " NewPW: " + crypt);
-              p.sendMessage("§5[UM]§7 Aufgrund eines Fehlers konntest du nicht registriert werden. Melde dich bitte bei einem Teammitglied.");
+              //System.err.println("Error while encrypting! OldPW: " + oldcrypt + " NewPW: " + crypt);
+              p.sendMessage(UserManager.prefix() + "Aufgrund eines Fehlers konntest du nicht registriert werden. Melde dich bitte bei einem Teammitglied.");
             }
           }
         }
         else
         {
-          sender.sendMessage("§5[UM]§7 /changepw <Altes Passwort> <Neues Passwort> <Neues Passwort>");
+          sender.sendMessage(UserManager.prefix() + "/changepw <Altes Passwort> <Neues Passwort> <Neues Passwort>");
         }
       }
     }
